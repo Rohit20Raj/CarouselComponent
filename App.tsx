@@ -7,7 +7,9 @@
 
 import React from 'react';
 import type {PropsWithChildren} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import {
+  Dimensions,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,103 +18,43 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import {CarouselComponent} from './Carousel';
+import {DATA} from './data'
+import L2View from './Carousel/Screen/L2View';
+// import CarouselComponent from '@rohitrajvns2020/carouselcomponent';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HomeScreen from './UserComponent/HomeScreen';
+import CarouselLayout from './Carousel/VideoPlayer/CarouselLayout';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Stack = createNativeStackNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const windowHeight = Dimensions.get("window").height;
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Carousel">
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Stack.Screen
+        name="L2View"
+        component={L2View}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+    {/* <ScrollView>
+      <Text>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus, facere quia tempora atque in doloremque, corporis, quas asperiores pariatur numquam officiis voluptate culpa vero esse laudantium earum quibusdam est inventore porro vel ipsum accusantium. Aut, nisi ullam quaerat ea id rerum impedit suscipit quo ut quas at, excepturi natus itaque.
+      </Text>
+      <CarouselComponent/>
+      <Text>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus, facere quia tempora atque in doloremque, corporis, quas asperiores pariatur numquam officiis voluptate culpa vero esse laudantium earum quibusdam est inventore porro vel ipsum accusantium. Aut, nisi ullam quaerat ea id rerum impedit suscipit quo ut quas at, excepturi natus itaque.
+      </Text>
+    </ScrollView> */}
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
