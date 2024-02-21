@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   AppState,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
@@ -33,29 +34,30 @@ export default function L2View() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [appState, setAppState] = useState(AppState.currentState);
   const [paused, setPaused] = useState(false);
+  const [PIP, setPIP] = useState(false);
 
-  useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
+  // useEffect(() => {
+  //   AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
-  }, []);
+  //   return () => {
+  //     AppState.removeEventListener('change', handleAppStateChange);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (appState === 'active') {
-      setPaused(false);
-    }
-  }, [appState]);
+  // useEffect(() => {
+  //   if (appState === 'active') {
+  //     setPaused(false);
+  //   }
+  // }, [appState]);
 
-  const handleAppStateChange = nextAppState => {
-    if (appState.match(/inactive|background/) && nextAppState === 'active') {
-      setPaused(false);
-    } else {
-      setPaused(true);
-    }
-    setAppState(nextAppState);
-  };
+  // const handleAppStateChange = nextAppState => {
+  //   if (appState.match(/inactive|background/) && nextAppState === 'active') {
+  //     setPaused(false);
+  //   } else {
+  //     setPaused(true);
+  //   }
+  //   setAppState(nextAppState);
+  // };
 
   const inPipMode = usePipModeListener();
 
@@ -100,10 +102,11 @@ export default function L2View() {
 
   return (
     <View
-      style={{
-        height: windowHeight,
-        width: windowWidth,
-      }}>
+    style={{
+      height: windowHeight,
+      width: windowWidth,
+    }}>
+        <StatusBar hidden/>
       {/* <Text>index={index}</Text> */}
       <ScrollView horizontal>
         <SwiperFlatList
@@ -122,12 +125,12 @@ export default function L2View() {
                    onPictureInPictureStatusChanged={() => {
                        console.log("PIP CHANGED");
                    }}
-                    playInBackground={true} // Audio continues to play when app entering background.
+                    // playInBackground={true} // Audio continues to play when app entering background.
                     // controls={true}
                     poster={item.thumbnail}
                     muted={mute}
                     repeat={true}
-                    paused={paused || (currentIndex === index ? false : true)}
+                    paused={(currentIndex === index ? false : true) || paused}
                     resizeMode="cover"
                     posterResizeMode="cover"
                     onProgress={this.handleProgress}
@@ -151,7 +154,7 @@ export default function L2View() {
                 </View>
               </TouchableWithoutFeedback>
               <View
-                style={{position: 'absolute', top: 40, right: 10, zIndex: 10}}>
+                style={{position: 'absolute', top: 10, right: 10, zIndex: 10}}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                   <XMarkIcon color="white" size={42} />
                 </TouchableOpacity>
@@ -159,18 +162,18 @@ export default function L2View() {
                   onPress={() => {
                     // handleSeek()
                     {
-                      Platform.OS === 'android' &&
-                        PipHandler.enterPipMode(95, 160);
+                      Platform.OS === 'android' ?
+                        PipHandler.enterPipMode(95, 160) : setPIP(true);
                     }
                   }}>
-                  <Image
+                  {Platform.OS === 'android' && <Image
                     style={{
                       height: 50,
                     }}
                     source={{
                       uri: 'https://cdn-img-dev.live2.ai/sdk_assets/PIP.png',
                     }}
-                  />
+                  />}
                 </TouchableOpacity>
               </View>
             </View>
@@ -182,5 +185,6 @@ export default function L2View() {
         />
       </ScrollView>
     </View>
+
   );
 }

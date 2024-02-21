@@ -29,9 +29,11 @@ import CarouselLayout from './Carousel/VideoPlayer/CarouselLayout';
 const Stack = createNativeStackNavigator();
 
 const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get("window").width;
 
 function App(): React.JSX.Element {
   return (
+    
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Carousel">
       <Stack.Screen

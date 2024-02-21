@@ -1,5 +1,13 @@
-import React from 'react';
-import {View, Text, ImageBackground, Pressable, TouchableOpacity, TouchableHighlight} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  ImageBackground,
+  Pressable,
+  TouchableOpacity,
+  TouchableHighlight,
+  AppState,
+} from 'react-native';
 import Video from 'react-native-video';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -12,6 +20,30 @@ export default function VideoPlayer({id, url, poster, paused, index}) {
       id: id,
       poster: poster,
     });
+  };
+  const [appState, setAppState] = useState(AppState.currentState);
+  const [bgPaused, setBGPaused] = useState(false);
+  useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (appState === 'active') {
+      setBGPaused(false);
+    }
+  }, [appState]);
+
+  const handleAppStateChange = nextAppState => {
+    if (appState.match(/inactive|background/) && nextAppState === 'active') {
+      setBGPaused(false);
+    } else {
+      setBGPaused(true);
+    }
+    setAppState(nextAppState);
   };
   return (
     <View
@@ -34,7 +66,7 @@ export default function VideoPlayer({id, url, poster, paused, index}) {
             poster={poster}
             muted={true}
             repeat={true}
-            paused={paused}
+            paused={paused || bgPaused}
             posterResizeMode="cover"
             resizeMode="cover"
             style={{
