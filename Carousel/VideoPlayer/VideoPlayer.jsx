@@ -42,8 +42,6 @@ export default function VideoPlayer({id, url, poster, paused, index}) {
               width: 200,
               overflow: 'hidden',
               borderRadius: 20,
-              borderColor: 'orange',
-              borderWidth: 2,
             }}
           />
         </TouchableHighlight>
